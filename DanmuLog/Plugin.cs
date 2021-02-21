@@ -18,7 +18,7 @@ namespace DanmuLog
         private PluginSettings Settings { get; }
         private SettingWindow SettingWnd { get; }
         public Plugin()
-        {           
+        {
             if (!Directory.Exists(FilePath))
             {
                 Directory.CreateDirectory(FilePath);
@@ -80,7 +80,7 @@ namespace DanmuLog
                             Info = "【弹幕】" + DateTime.Now.ToString("HH:mm:ss.fff") + " : " + e.Danmaku.UserName + " 说：" + e.Danmaku.CommentText;
                             Output("Log", Info, Roomid);
                         }
-                        else if(Settings.DanmuData)
+                        else if (Settings.DanmuData)
                         {
                             Info = "{\"TimeStamp\":\"" + DateTime.Now.ToString("HH:mm:ss.fff") + "\", \"Uname\":\"" + e.Danmaku.UserName + "\", \"Comment\":\"" + e.Danmaku.CommentText + "\", \"Type\":\"弹幕\", \"SCTime\":0}";
                             Output("Data", Info, Roomid);
@@ -88,7 +88,7 @@ namespace DanmuLog
                         else
                         {
                             TimeSpan t = DateTime.Now - time_lrc_begin;
-                            Info = "[" + t.Hours+":"+t.Minutes+":"+t.Seconds+"."+t.Milliseconds/10 + "]" + e.Danmaku.UserName + " 说：" + e.Danmaku.CommentText;
+                            Info = "[" + t.Hours + ":" + t.Minutes + ":" + t.Seconds + "." + t.Milliseconds / 10 + "]" + e.Danmaku.UserName + " 说：" + e.Danmaku.CommentText;
                             Output("Lrc", Info, Roomid);
                         }
                         break;
@@ -100,7 +100,7 @@ namespace DanmuLog
                             Info = "【留言】" + DateTime.Now.ToString("HH:mm:ss.fff") + " : " + e.Danmaku.UserName + " 说：" + e.Danmaku.CommentText;
                             Output("Log", Info, Roomid);
                         }
-                        else if(Settings.DanmuData)
+                        else if (Settings.DanmuData)
                         {
                             Info = "{\"TimeStamp\":\"" + DateTime.Now.ToString("HH:mm:ss.fff") + "\", \"Uname\":\"" + e.Danmaku.UserName + "\", \"Comment\":\"" + e.Danmaku.CommentText + "\", \"Type\":\"留言\", \"SCTime\":" + e.Danmaku.SCKeepTime.ToString() + "}";
                             Output("Data", Info, Roomid);
@@ -175,11 +175,42 @@ namespace DanmuLog
 
                     using (var file = new StreamWriter(TxtPath, true))
                     {
-                        String Info = "[00:00:00]DanmuLog.Lrc\n[00:00:00]Time="+time_lrc_begin.ToString("G")+"\n[00:00:00]File="+TxtPath+"\n";
+                        String Info = "[00:00:00]Time=" + time_lrc_begin.ToString("G") + "\n[00:00:00]File=" + TxtPath + "\n[00:00:00]DanmuLog.Lrc\n";
                         file.WriteLine(Info);
+                        file.Close();
                     }
                 }
 
+            } else if (Settings.DanmuLrc)
+            {
+
+                using (var file = new System.IO.StreamReader(TxtPath))
+                {
+                    string line;
+                    if ((line = file.ReadLine()) != null)
+                    {
+                        System.Console.WriteLine(line);
+                        String[] str = line.Split('=');
+                        if (str.Length > 1)
+                        {
+                            time_lrc_begin = DateTime.Parse(str[1]);
+                            if ((DateTime.Now - time_lrc_begin).Hours > 24 || (DateTime.Now - time_lrc_begin).Hours < -24)
+                            {
+                                time_lrc_begin = DateTime.Now;
+                                Log(LogData + "-" + FileName + "重新打开时读取的时间错误");
+                            }
+                        }
+                    }
+                    file.Close();
+                }
+
+                using (var file = new StreamWriter(TxtPath, true))
+                {
+                    TimeSpan t = DateTime.Now - time_lrc_begin;
+                    String Info = "\n[" + t.Hours + ":" + t.Minutes + ":" + t.Seconds + "." + t.Milliseconds / 10 + "]重新打开Time=" + time_lrc_begin.ToString("G") + "\n";
+                    file.WriteLine(Info);
+                    file.Close();
+                }
             }
         }
 
@@ -195,12 +226,12 @@ namespace DanmuLog
         public void ShowMessage()
         {
             string FileName = RoomId.ToString() + "-" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
-            
+
             if (Settings.DanmuLog)
             {
                 OutFile("Log", FileName);
             }
-            else if(Settings.DanmuData)
+            else if (Settings.DanmuData)
             {
                 OutFile("Data", FileName);
             }
