@@ -37,6 +37,8 @@ namespace DanmuLog
         public bool DanmuLog { get => danmuLog; set { if (danmuLog != value) { danmuLog = value; OnPropertyChanged(); } } }
         private bool danmuData = false;
         public bool DanmuData { get => danmuData; set { if (danmuData != value) { danmuData = value; OnPropertyChanged(); } } }
+        private bool danmuLrc = false;
+        public bool DanmuLrc { get => danmuLrc; set { if (danmuLrc != value) { danmuLrc = value; OnPropertyChanged(); } } }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)

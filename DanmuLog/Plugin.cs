@@ -80,10 +80,16 @@ namespace DanmuLog
                             Info = "【弹幕】" + DateTime.Now.ToString("HH:mm:ss.fff") + " : " + e.Danmaku.UserName + " 说：" + e.Danmaku.CommentText;
                             Output("Log", Info, Roomid);
                         }
-                        else
+                        else if(Settings.DanmuData)
                         {
                             Info = "{\"TimeStamp\":\"" + DateTime.Now.ToString("HH:mm:ss.fff") + "\", \"Uname\":\"" + e.Danmaku.UserName + "\", \"Comment\":\"" + e.Danmaku.CommentText + "\", \"Type\":\"弹幕\", \"SCTime\":0}";
                             Output("Data", Info, Roomid);
+                        }
+                        else
+                        {
+                            TimeSpan t = DateTime.Now - time_lrc_begin;
+                            Info = "[" + t.Hours+":"+t.Minutes+":"+t.Seconds+"."+t.Milliseconds/10 + "]" + e.Danmaku.UserName + " 说：" + e.Danmaku.CommentText;
+                            Output("Lrc", Info, Roomid);
                         }
                         break;
                     }
@@ -94,10 +100,16 @@ namespace DanmuLog
                             Info = "【留言】" + DateTime.Now.ToString("HH:mm:ss.fff") + " : " + e.Danmaku.UserName + " 说：" + e.Danmaku.CommentText;
                             Output("Log", Info, Roomid);
                         }
-                        else
+                        else if(Settings.DanmuData)
                         {
                             Info = "{\"TimeStamp\":\"" + DateTime.Now.ToString("HH:mm:ss.fff") + "\", \"Uname\":\"" + e.Danmaku.UserName + "\", \"Comment\":\"" + e.Danmaku.CommentText + "\", \"Type\":\"留言\", \"SCTime\":" + e.Danmaku.SCKeepTime.ToString() + "}";
                             Output("Data", Info, Roomid);
+                        }
+                        else
+                        {
+                            TimeSpan t = DateTime.Now - time_lrc_begin;
+                            Info = "[" + t.Hours + ":" + t.Minutes + ":" + t.Seconds + "." + t.Milliseconds / 10 + "]" + e.Danmaku.UserName + " 留言：" + e.Danmaku.CommentText;
+                            Output("Lrc", Info, Roomid);
                         }
                         break;
                     }
@@ -143,6 +155,9 @@ namespace DanmuLog
             }
         }
 
+
+
+        private DateTime time_lrc_begin = DateTime.Now;
         // 文件
         public void OutFile(string LogData, string FileName)
         {
@@ -153,6 +168,18 @@ namespace DanmuLog
                 AddDM(LogData + "-" + FileName + "已创建", false);
                 Log(LogData + "-" + FileName + "已创建");
                 fs.Close();
+
+                if (LogData == "Lrc")
+                {
+                    time_lrc_begin = DateTime.Now;
+
+                    using (var file = new StreamWriter(TxtPath, true))
+                    {
+                        String Info = "[00:00:00]DanmuLog.Lrc\n[00:00:00]Time="+time_lrc_begin.ToString("G")+"\n[00:00:00]File="+TxtPath+"\n";
+                        file.WriteLine(Info);
+                    }
+                }
+
             }
         }
 
@@ -173,9 +200,13 @@ namespace DanmuLog
             {
                 OutFile("Log", FileName);
             }
-            else
+            else if(Settings.DanmuData)
             {
                 OutFile("Data", FileName);
+            }
+            else
+            {
+                OutFile("Lrc", FileName);
             }
         }
 

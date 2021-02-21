@@ -5,9 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DanmuLog"
              mc:Ignorable="d" 
-             Title="弹幕日志-设置" Height="60.976" Width="177.454" FontSize="15" Closing="Window_Closing" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
+             Title="弹幕日志-设置" Height="60.976" Width="280" FontSize="15" Closing="Window_Closing" SizeToContent="WidthAndHeight" ResizeMode="NoResize" FlowDirection="LeftToRight">
     <Grid>
-        <RadioButton Content="弹幕日志" GroupName="Settings" IsChecked="{Binding DanmuLog}" HorizontalAlignment="Stretch" Margin="5,5,90,5" VerticalAlignment="Stretch" FontSize="15" Grid.IsSharedSizeScope="True"/>
-        <RadioButton Content="弹幕字幕" GroupName="Settings" IsChecked="{Binding DanmuData}" HorizontalAlignment="Stretch" Margin="86,5,5,5" VerticalAlignment="Stretch" FontSize="15" Grid.IsSharedSizeScope="True"/>
+        <RadioButton Content="弹幕日志" GroupName="Settings" IsChecked="{Binding DanmuLog}" HorizontalAlignment="Stretch" Margin="5,5,5,5" VerticalAlignment="Stretch" FontSize="15" Grid.IsSharedSizeScope="True"/>
+        <RadioButton Content="弹幕字幕" GroupName="Settings" IsChecked="{Binding DanmuData}" HorizontalAlignment="Stretch" Margin="95,5,5,5" VerticalAlignment="Stretch" FontSize="15" Grid.IsSharedSizeScope="True"/>
+        <RadioButton Content="弹幕Lrc" GroupName="Settings" IsChecked="{Binding DanmuLrc}" HorizontalAlignment="Stretch"  Margin="185,5,5,5" VerticalAlignment="Stretch" FontSize="15" Grid.IsSharedSizeScope="True"/>
     </Grid>
 </Window>
